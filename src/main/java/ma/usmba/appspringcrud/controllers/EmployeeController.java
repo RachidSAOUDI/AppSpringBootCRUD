@@ -3,12 +3,14 @@ package ma.usmba.appspringcrud.controllers;
 import ma.usmba.appspringcrud.models.Employee;
 import ma.usmba.appspringcrud.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Controller
 public class EmployeeController {
 
     @Autowired
@@ -20,8 +22,8 @@ public class EmployeeController {
         return "index";
     }
 
-    @GetMapping("newEmployeeForm")
-    public String newEmployeeForm(Model model){
+    @GetMapping("/newEmployeeForm")
+    public String newEmployeeForm(Model model) {
         Employee employee = new Employee();
         model.addAttribute("employee", employee);
         return "new_employee";
