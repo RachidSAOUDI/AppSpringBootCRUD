@@ -1,24 +1,39 @@
 package ma.usmba.appspringcrud.controllers;
 
+import lombok.AllArgsConstructor;
 import ma.usmba.appspringcrud.models.Employee;
+import ma.usmba.appspringcrud.repositories.EmployeeRepository;
 import ma.usmba.appspringcrud.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@AllArgsConstructor
 public class EmployeeController {
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private EmployeeService employeeService;
 
     @GetMapping("/")
-    private String viewHomePage(Model model){
+    public String home(Model model){
         model.addAttribute("listEmployees", employeeService.getAllEmployees());
+        return "index";
+    }
+    @GetMapping(path = "/index")
+    private String viewHomePage(Model model,
+                                @RequestParam(name = "page", defaultValue = "0") int page,
+                                @RequestParam(name = "size", defaultValue = "5") int size,
+                                @RequestParam(name = "keyword", defaultValue = "") String keyword){
+//        model.addAttribute("listEmployees", employeeService.getAllEmployees());
+//        return "index";
+        Page<Employee> pageEmployees = employeeRepository.findByFirstNameContains(keyword, PageRequest.of(page, size));
+        model.addAttribute("listEmployees", pageEmployees.getContent());
+        model.addAttribute("keyword", keyword);
         return "index";
     }
 
